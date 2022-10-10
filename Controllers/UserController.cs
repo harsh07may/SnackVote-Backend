@@ -32,8 +32,10 @@ namespace SnackVote_Backend.Controllers
         {
             var userName = User.FindFirstValue(ClaimTypes.Name);
             var userRole = User.FindFirstValue(ClaimTypes.Role);
+            var voteStatus = _context.Users.FirstOrDefault(x => x.UserName == userName);
             return Ok(new 
             { 
+                voteStatus.HasVoted,
                 userName,
                 userRole
             });

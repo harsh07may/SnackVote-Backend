@@ -20,17 +20,25 @@ namespace SnackVote_Backend.Controllers
             _context = context;
         }
 
-        [HttpGet("addvote"), Authorize]
+        [HttpPost("addvote"), Authorize]
         public async Task<ActionResult<List<Vote>>> Addvote(string vote_item)
         {
             var vote =new Vote();
             var userName = User.FindFirstValue(ClaimTypes.Name);
-            
+            var currentUser = _context.Users.FirstOrDefault(x => x.UserName == userName);
+
+            if(currentUser != null)
+            {
+                currentUser.HasVoted = true;
+            }
+
+
             vote = new Vote()
             {
                 UserName = userName,
                 MenuName = vote_item
             };
+            
             await _context.Votes.AddAsync(vote);
             await _context.SaveChangesAsync();
             return Ok(await _context.Votes.ToListAsync());
@@ -55,11 +63,15 @@ namespace SnackVote_Backend.Controllers
         
         }
 
-
+        //Truncate Vote Table
         [HttpGet("deletevotes"),Authorize(Roles ="Admin")]
         public async Task<ActionResult<List<Vote>>> Deletevotes()
         {
             _context.Votes.RemoveRange(_context.Votes);
+
+            var userVoteStatus = _context.Users;
+            await userVoteStatus.ForEachAsync(x => x.HasVoted = false);
+
             await _context.SaveChangesAsync();
             return Ok(await _context.Votes.ToListAsync());
 

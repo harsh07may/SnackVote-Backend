@@ -7,5 +7,6 @@
         public byte[] PasswordHash { get; set; } = Array.Empty<byte>();     
         public byte[] PasswordSalt { get; set; } = Array.Empty<byte>();
         public string UserRole { get; set; } = string.Empty;
+        public bool HasVoted { get; set; } = false;
     }
 }

@@ -71,11 +71,35 @@ namespace SnackVote_Backend.Controllers
             return Ok(await _context.Menus.ToListAsync());
         }
 
+
         [HttpGet("getitems"),Authorize]
-        public async Task<ActionResult<List<Menu>>> GetAll()
+        public async Task<ActionResult<List<MenuDownloadDTO>>> GetAll()
         {
             return Ok(await _context.Menus.ToListAsync());
         }
+        
+        
+        [HttpDelete("deleteItem"),Authorize]
+        public async Task<ActionResult<MenuDownloadDTO>> DeleteItem(int id)
+        {
+            var item = await _context.Menus.FindAsync(id);
+
+            if (item == null)
+            { 
+                return NotFound(); 
+            }
+            _context.Menus.Remove(item);
+            _context.SaveChangesAsync();
+            return new MenuDownloadDTO()
+            {
+                Name = item.MenuName,
+                Category = item.MenuCategory,
+                Description = item.MenuDescription,
+                Image = "data:image/jpeg;base64,"+ Convert.ToBase64String(item.MenuImage)
+            };
+        }
+
+
         [HttpGet("getItem"),Authorize]
         public async Task<ActionResult<MenuDownloadDTO>> GetItem(int id)
         {

@@ -32,7 +32,6 @@ namespace SnackVote_Backend.Controllers
                 currentUser.HasVoted = true;
             }
 
-
             vote = new Vote()
             {
                 UserName = userName,
@@ -57,7 +56,7 @@ namespace SnackVote_Backend.Controllers
                 {
                     MenuName = group.FirstOrDefault().MenuName,
                     Count = group.Count()
-                }).ToListAsync();
+                }).ToListAsync();   
 
             return counts;
         

@@ -35,7 +35,7 @@ namespace SnackVote_Backend.Controllers
             var voteStatus = _context.Users.FirstOrDefault(x => x.UserName == userName);
             return Ok(new 
             { 
-                voteStatus.HasVoted,
+                voteStatus?.HasVoted,
                 userName,
                 userRole
             });
@@ -61,9 +61,9 @@ namespace SnackVote_Backend.Controllers
             
         }
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserDTO request)
+        public async Task<ActionResult<string>> Login(UserLoginDTO request)
         {
-            var dbuser = await _context.Users.FirstOrDefaultAsync(c => c.UserName == request.Username && c.UserRole == request.Role );
+            var dbuser = await _context.Users.FirstOrDefaultAsync(c => c.UserName == request.Username);
             
             if(dbuser == null)
             {

@@ -75,7 +75,17 @@ namespace SnackVote_Backend.Controllers
         [HttpGet("getitems"),Authorize]
         public async Task<ActionResult<List<MenuDownloadDTO>>> GetAll()
         {
-            return Ok(await _context.Menus.ToListAsync());
+            //return Ok(await _context.Menus.ToListAsync());
+            var itemData = await _context.Menus.Select(s => new MenuDownloadDTO()
+            {
+                Id = s.MenuId,
+                Name = s.MenuName,
+                Category = s.MenuCategory,
+                Description = s.MenuDescription,
+                Image = "data:image/jpeg;base64," + Convert.ToBase64String(s.MenuImage)
+            }).ToListAsync();
+
+            return itemData;
         }
         
         
@@ -92,6 +102,7 @@ namespace SnackVote_Backend.Controllers
             _context.SaveChangesAsync();
             return new MenuDownloadDTO()
             {
+                Id = item.MenuId,
                 Name = item.MenuName,
                 Category = item.MenuCategory,
                 Description = item.MenuDescription,
